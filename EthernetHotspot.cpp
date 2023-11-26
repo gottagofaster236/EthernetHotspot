@@ -9,16 +9,23 @@
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Networking.Connectivity.h>
 #include <winrt/Windows.Networking.NetworkOperators.h>
+#include <windows.h>
 
 using namespace winrt::Windows::Networking::Connectivity;
 using namespace winrt::Windows::Networking::NetworkOperators;
 
+static bool isAlreadyRunning();
 static void tryTurnOnHotspot();
 
 // Comment this line for the console to be shown.
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 int main() {
+    if (isAlreadyRunning()) {
+        std::cout << "EthernetHotspot is running already";
+        return -1;
+    }
     std::cout << "EthernetHotspot: application loaded" << std::endl;
+
     winrt::init_apartment();
     while (true) {
         tryTurnOnHotspot();
@@ -28,6 +35,11 @@ int main() {
 
 static TetheringOperationalState getDesiredTetheringOperationalState(const ConnectionProfile& profile);
 static std::string_view tetheringOperationStatusToString(TetheringOperationStatus status);
+
+bool isAlreadyRunning() {
+    CreateMutexA(0, FALSE, "Local\\EthernetHotspot");
+    return GetLastError() == ERROR_ALREADY_EXISTS;
+}
 
 void tryTurnOnHotspot() {
     ConnectionProfile profile = NetworkInformation::GetInternetConnectionProfile();
