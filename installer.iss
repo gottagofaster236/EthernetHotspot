@@ -30,7 +30,7 @@ Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=admin
-OutputDir=setup
+OutputDir=Installer
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
 
