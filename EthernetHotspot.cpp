@@ -17,8 +17,11 @@ using namespace winrt::Windows::Networking::NetworkOperators;
 static bool isAlreadyRunning();
 static void tryTurnOnHotspot();
 
-// Comment this line for the console to be shown.
+// Hide the console for release builds.
+#ifdef NDEBUG
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 int main() {
     if (isAlreadyRunning()) {
         std::cout << "EthernetHotspot is running already";
@@ -43,14 +46,16 @@ bool isAlreadyRunning() {
 
 void tryTurnOnHotspot() {
     ConnectionProfile profile = NetworkInformation::GetInternetConnectionProfile();
-    if (!profile) {
-        std::cout << "Network connection profile is null" << std::endl;
-        return;
-    }
 
     TetheringOperationalState desiredState = getDesiredTetheringOperationalState(profile);
 
-    NetworkOperatorTetheringManager tetheringManager = NetworkOperatorTetheringManager::CreateFromConnectionProfile(profile);
+    static NetworkOperatorTetheringManager tetheringManager{nullptr};
+    if (profile) {
+        tetheringManager = NetworkOperatorTetheringManager::CreateFromConnectionProfile(profile);
+    } else if (!tetheringManager) {
+        return;
+    }
+
     if (tetheringManager.TetheringOperationalState() == desiredState) {
         if (desiredState == TetheringOperationalState::On) {
             std::cout << "Hotspot is on" << std::endl;
@@ -72,6 +77,10 @@ void tryTurnOnHotspot() {
 }
 
 TetheringOperationalState getDesiredTetheringOperationalState(const ConnectionProfile& profile) {
+    if (!profile) {
+        std::cout << "Network connection profile is null" << std::endl;
+        return TetheringOperationalState::Off;
+    }
     if (profile.IsWlanConnectionProfile()) {
         std::cout << "This is a Wi-Fi connection!" << std::endl;
         return TetheringOperationalState::Off;
