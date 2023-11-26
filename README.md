@@ -6,4 +6,4 @@ This program turns on the mobile hotspot on Windows 11 automatically whenever th
 
 It launches on startup and runs in the background, checking if Ethernet is available every 10 seconds.
 
-To install EthernetHotspot, download and run the installer from [this link](https://github.com/gottagofaster236/RewardsTheater/releases/latest/EthernetExplorer-Installer.exe).
+To install EthernetHotspot, download and run the installer from [this link](https://github.com/gottagofaster236/EthernetHotspot/releases/download/1.0.0/EthernetExplorer-Installer.exe).
