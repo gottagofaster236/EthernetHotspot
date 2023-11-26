@@ -39,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: installer
-        path: src\Installer\EthernetExplorer-Installer.exe
+        path: src\Installer\EthernetHotspot-Installer.exe
 
   create_release:
     name: Create Release
